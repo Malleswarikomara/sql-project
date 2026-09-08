@@ -1,0 +1,40 @@
+SELECT
+    post_id,
+    caption,
+    total_likes,
+    total_comments,
+    total_shares,
+    total_engagement,
+    RANK() OVER (
+        ORDER BY total_engagement DESC
+    ) AS engagement_rank
+FROM post_engagement;
+
+
+SELECT *
+FROM
+(
+    SELECT
+        post_id,
+        caption,
+        total_engagement,
+        RANK() OVER (
+            ORDER BY total_engagement DESC
+        ) AS engagement_rank
+    FROM post_engagement
+) AS ranked_posts
+WHERE engagement_rank <= 3;
+
+
+SELECT
+    user_id,
+    post_id,
+    post_date,
+    post_type,
+    ROW_NUMBER() OVER (
+        PARTITION BY user_id
+        ORDER BY post_date
+    ) AS post_number
+FROM posts;
+
+
